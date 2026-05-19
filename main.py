@@ -5,12 +5,16 @@ from snake import Snake
 from food import Food
 
 pygame.init()
+pygame.mixer.init()
 
 screen= pygame.display.set_mode((settings.WIDTH,settings.HEIGHT))
 pygame.display.set_caption("Snake Game")
 
 clock= pygame.time.Clock()
 font=pygame.font.SysFont(None,35)
+
+eat_sound=pygame.mixer.Sound("assets/eat.wav")
+gameover_sound=pygame.mixer.Sound("assets/gameover.wav")
 
 snake= Snake()
 food=Food()
@@ -83,13 +87,16 @@ while running:
 
         if head[0] <0 or head[0]>= settings.WIDTH or head[1]<0 or head[1]>= settings.HEIGHT:
             state= "GAME_OVER"
+            gameover_sound.play()
         if snake.check_self_collision():
             state="GAME_OVER"
+            gameover_sound.play()
         if (head[0] < food.position[0] + settings.BLOCK_SIZE and head[0] + settings.BLOCK_SIZE > food.position[0] and head[1] < food.position[1] + settings.BLOCK_SIZE and head[1] + settings.BLOCK_SIZE > food.position[1]):
             food.respawn()
             snake.length +=1
             score+=1
             speed+=1
+            eat_sound.play()
             if score>high_score:
                 high_score=score
                 
