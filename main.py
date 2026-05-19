@@ -19,50 +19,72 @@ food=Food()
 score=0
 high_score=0
 speed=settings.SPEED
-game_over=False
 
-def load_high_score():
-    try:
-        with open("score.txt","r") as f:
-            return int(f.read())
-    except:
-        return 0
-def save_high_score(score):
-    with open("score.txt","w") as f:
-        f.write(str(score))
-high_score=load_high_score()
-
+state="MENU"
 running=True
+
+def draw_menu():
+    screen.fill(settings.BLACK)
+    title=font.render("SNAKE GAME",True,settings.WHITE)
+    start=font.render("Press SPACE to start",True, settings.WHITE)
+
+    screen.blit(title,(200,200))
+    screen.blit(start,(150,260))
+def draw_game_over():
+    screen.fill(settings.BLACK)
+    title=font.render("GAME OVER",True,settings.WHITE)
+    start=font.render("Press R to restart",True, settings.WHITE)
+
+    screen.blit(title,(220,200))
+    screen.blit(start,(150,260))
+
+# def load_high_score():
+#     try:
+#         with open("score.txt","r") as f:
+#             return int(f.read())
+#     except:
+#         return 0
+# def save_high_score(score):
+#     with open("score.txt","w") as f:
+#         f.write(str(score))
+# high_score=load_high_score()
+
+
 while running:
     screen.fill(settings.BLACK)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running=False
+
         if event.type == pygame.KEYDOWN:
-            if game_over and event.key == pygame.K_r:
+            if state == "MENU":
+                if event.key == pygame.K_SPACE:
+                    state="PLAYING"
+            elif state == "GAME_OVER":
                 snake.reset()
                 food.respawn()
                 score=0
                 speed=settings.SPEED
-                game_over=False
-                
-            if not game_over:
+                state = "PLAYING"
+            elif state == "PLAYING":
                 if event.key == pygame.K_LEFT:
-                    snake.change_direction(-settings.SPEED,0)
+                    snake.change_direction(-settings.BLOCK_SIZE,0)
                 elif event.key == pygame.K_RIGHT:
-                    snake.change_direction(settings.SPEED,0)
+                    snake.change_direction(settings.BLOCK_SIZE,0)
                 elif event.key == pygame.K_UP:
-                    snake.change_direction(0,-settings.SPEED)
+                    snake.change_direction(0,-settings.BLOCK_SIZE)
                 elif event.key == pygame.K_DOWN:
-                    snake.change_direction(0,settings.SPEED)
-    if not game_over:
+                    snake.change_direction(0,settings.BLOCK_SIZE)
+            
+            
+    if state == "PLAYING":
         snake.move()
         head=snake.get_head()
 
         if head[0] <0 or head[0]>= settings.WIDTH or head[1]<0 or head[1]>= settings.HEIGHT:
-            game_over = True
+            state= "GAME_OVER"
         if snake.check_self_collision():
-            game_over=True
+            state="GAME_OVER"
         if (head[0] < food.position[0] + settings.BLOCK_SIZE and head[0] + settings.BLOCK_SIZE > food.position[0] and head[1] < food.position[1] + settings.BLOCK_SIZE and head[1] + settings.BLOCK_SIZE > food.position[1]):
             food.respawn()
             snake.length +=1
@@ -70,21 +92,21 @@ while running:
             speed+=1
             if score>high_score:
                 high_score=score
-                save_high_score(high_score)
+                
 
-    screen.fill(settings.BLACK)
+    
 
-    pygame.draw.rect(
-        screen,
-        settings.RED,
-        (food.position[0],food.position[1],settings.BLOCK_SIZE,settings.BLOCK_SIZE)
-    )
-    for part in snake.body:
         pygame.draw.rect(
             screen,
-            settings.GREEN,
-            (part[0],part[1], settings.BLOCK_SIZE, settings.BLOCK_SIZE)
+            settings.RED,
+            (food.position[0],food.position[1],settings.BLOCK_SIZE,settings.BLOCK_SIZE)
         )
+        for part in snake.body:
+            pygame.draw.rect(
+                screen,
+                settings.GREEN,
+                (part[0],part[1], settings.BLOCK_SIZE, settings.BLOCK_SIZE)
+            )
     
     
     score_text= font.render(
@@ -95,10 +117,12 @@ while running:
     screen.blit(score_text, (10, 10))
     high_text=font.render(f"High Score: {high_score}",True,settings.WHITE)
     screen.blit(high_text,(10,40))
-    if game_over:
-        text=font.render("GAME OVER - Press R",True,settings.WHITE)
-        screen.blit(text, (10,settings.HEIGHT//2))
+    
+    if state == "MENU":
+        draw_menu()
+    elif state == "GAME_OVER":
+        draw_game_over()
     pygame.display.update()
-    clock.tick(settings.SPEED)
+    clock.tick(speed)
 pygame.quit()
 sys.exit()
