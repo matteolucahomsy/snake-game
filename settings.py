@@ -1,10 +1,8 @@
-import pygame
-pygame.init()
-screen=pygame.display.set_mode((600,600))
-running=True
-while running:
-    for event in pygame.event.get():
-        if event.type==pygame.QUIT:
-            running= False
-    pygame.display.update()
-pygame.quit()
+WIDTH =600
+HEIGHT= 600
+BLOCK_SIZE=20
+SPEED=10
+BLACK=(0,0,0)
+GREEN=(0,255,0)
+RED=(255,0,0)
+WHITE=(255,255,255)
