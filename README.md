@@ -8,6 +8,8 @@ A simple Snake game built with Python and Pygame.
 - Score system
 - Collision detection
 - Game over screen
+- Increasing challenge over time
+- Snake move automatically
 
 ## Technologies Used
 - Python 3.12
@@ -26,22 +28,19 @@ python main.py
 ```
 ### Project Structure
 ```text
-snake-game/
+snake_game/
 │
-├── main.py
-|__ food.py
-|__ snake.py
-|__ settings.py
-├── README.md
-├── assets/
-└── .gitignore
+├── main.py        # Mode joueur
+├── main_ai.py     # Mode IA
+├── snake.py       # Logique du serpent
+├── food.py        # Logique de la nourriture
+├── settings.py    # Configuration du jeu
+│
+└── assets/        # (optionnel)
+    ├── eat.wav
+    └── gameover.wav
 ```
-### Future Improvements
-- Main menu
-- Sound effects
-- Levels
-- Obstacles
-- AI Snake mode
+
 
 ### Author
 Matteo Luca Homsy
