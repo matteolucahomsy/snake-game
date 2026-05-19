@@ -10,14 +10,31 @@ screen= pygame.display.set_mode((settings.WIDTH,settings.HEIGHT))
 pygame.display.set_caption("Snake Game")
 
 clock= pygame.time.Clock()
+font=pygame.font.SysFont(None,35)
 
 snake= Snake()
 food=Food()
-game_over=False
+
+
 score=0
-font=pygame.font.SysFont(None,35)
+high_score=0
+speed=settings.SPEED
+game_over=False
+
+def load_high_score():
+    try:
+        with open("score.txt","r") as f:
+            return int(f.read())
+    except:
+        return 0
+def save_high_score(score):
+    with open("score.txt","w") as f:
+        f.write(str(score))
+high_score=load_high_score()
+
 running=True
 while running:
+    screen.fill(settings.BLACK)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running=False
@@ -26,8 +43,9 @@ while running:
                 snake.reset()
                 food.respawn()
                 score=0
+                speed=settings.SPEED
                 game_over=False
-                snake.direction=[0,0]
+                
             if not game_over:
                 if event.key == pygame.K_LEFT:
                     snake.change_direction(-settings.SPEED,0)
@@ -49,6 +67,10 @@ while running:
             food.respawn()
             snake.length +=1
             score+=1
+            speed+=1
+            if score>high_score:
+                high_score=score
+                save_high_score(high_score)
 
     screen.fill(settings.BLACK)
 
@@ -71,9 +93,11 @@ while running:
         settings.WHITE
     )
     screen.blit(score_text, (10, 10))
+    high_text=font.render(f"High Score: {high_score}",True,settings.WHITE)
+    screen.blit(high_text,(10,40))
     if game_over:
         text=font.render("GAME OVER - Press R",True,settings.WHITE)
-        screen.blit(text, (80,settings.HEIGHT//2))
+        screen.blit(text, (10,settings.HEIGHT//2))
     pygame.display.update()
     clock.tick(settings.SPEED)
 pygame.quit()
