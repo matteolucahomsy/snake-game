@@ -46,7 +46,7 @@ while running:
     screen.fill(settings.BLACK)
     for event in pygame.event.get():
         if event.type==pygame.QUIT:
-            reunning=False
+            running=False
     if state=="PLAYING":
         snake.change_direction(*get_ai_direction(snake,food))
         snake.move()
