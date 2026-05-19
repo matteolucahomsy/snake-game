@@ -22,7 +22,7 @@ food=Food()
 
 score=0
 high_score=0
-speed=settings.SPEED
+speed=settings.SPEED + (score // 3)
 
 state="MENU"
 running=True

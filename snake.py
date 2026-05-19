@@ -13,6 +13,8 @@ class Snake:
         if len(self.body) > self.length:
             del self.body[0]
     def change_direction(self,x,y):
+        if (x,y) == (-self.direction[0], -self.direction[1]):
+            return
         self.direction=[x,y]
     def check_self_collision(self):
         head =self.body[-1]
